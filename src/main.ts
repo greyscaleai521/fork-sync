@@ -39,14 +39,14 @@ async function run() {
   }
 
   try {
+    console.log(`owner...${owner}`)
+    console.log(`repo owner...${context.repo.owner}`) 
     let pr = await octokit.pulls.create({ owner: context.repo.owner, repo, title: prTitle, head: owner + ':' + head, base: base, body: prMessage, maintainer_can_modify: false });
     await delay(20);
     if (autoApprove) {
         console.log(`Auto commenting...`)
         await octokit.pulls.createReview({ owner: context.repo.owner, repo, pull_number: pr.data.number, event: "COMMENT", body: "Auto approved" });
         console.log(`Auto approving..`)
-        console.log(`owner...${owner}`)
-        console.log(`repo owner...${context.repo.owner}`)        
         await octokit.pulls.createReview({ owner: context.repo.owner, repo, pull_number: pr.data.number, event: "APPROVE" });
     }
     if(autoMerge) {
